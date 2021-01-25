@@ -142,4 +142,31 @@ export default {
   width: 100%;
   height: 100%;
 }
+.marker-cluster-large {
+  background-image: url("../assets/marker-cluster-large.png");
+  background-size: 40px 40px;
+  background-color: transparent;
+}
+.marker-cluster-large div {
+  font: 0px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  background-color: transparent;
+}
+.marker-cluster-medium {
+  background-image: url("../assets/marker-cluster-medium.png");
+  background-size: 40px 40px;
+  background-color: transparent;
+}
+.marker-cluster-medium div {
+  font: 0px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  background-color: transparent;
+}
+.marker-cluster-small {
+  background-image: url("../assets/marker-cluster-small.png");
+  background-size: 40px 40px;
+  background-color: transparent;
+}
+.marker-cluster-small div {
+  font: 0px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  background-color: transparent;
+}
 </style>
