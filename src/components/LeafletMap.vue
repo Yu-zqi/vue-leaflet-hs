@@ -23,9 +23,10 @@ export default {
   mounted: function() {
     this.initMap();
     this.initIcon();
+    //console.log(this.map);
+    this.getMarkerJson();
   },
   methods: {
-    //初始化marker的图标
     initIcon() {
       /* leaflet default icon */
       delete L.Icon.Default.prototype._getIconUrl;
@@ -53,9 +54,12 @@ export default {
       var tianditu = L.layerGroup([tiandituVec, tiandituCva]);
       tianditu.addTo(this.map);
     },
-
+    searchMoveToLocation() {
+      console.log("hello");
+      console.log(this.map);
+    },
     //通过地图服务器的response创建marker
-    createMarkers(res) {
+    createMarkers(res, map) {
       //创建一个MarkerClusterGroup实例，用于聚合显示marker
       var markerClusterLayer = new L.MarkerClusterGroup({
         spiderfyOnMaxZoom: false,
@@ -119,7 +123,11 @@ export default {
       });
 
       markerClusterLayer.addLayer(featuresLayer);
-      this.map.addLayer(markerClusterLayer);
+      map.addLayer(markerClusterLayer);
+
+      function moveToLocationFunciton(latlng) {
+        map.setView(latlng, 25);
+      }
 
       //搜索框control
       var searchControl = new L.Control.Search({
@@ -128,24 +136,25 @@ export default {
         propertyName: "OId",
         marker: false,
         hideMarkerOnCollapse: true,
-        moveToLocation: function(latlng, title, map) {
-          //map.fitBounds( latlng.layer.getBounds() );
-          var zoom = map.getBoundsZoom(latlng.layer.getBounds());
-          map.setView(latlng, zoom); // access the zoom
-        }
+        moveToLocation: moveToLocationFunciton
       });
-      this.map.addControl(searchControl);
+
+      searchControl.on("search:locationfound", function(e) {
+        if (e.layer._popup) e.layer.openPopup();
+      });
+
+      map.addControl(searchControl);
+    },
+    getMarkerJson() {
+      this.$axios
+        .get(
+          "http://localhost:8001/geoserver/hs/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=hs%3Ahspoi&maxFeatures=1020&outputFormat=application%2Fjson"
+        )
+        .then(response => {
+          this.geoJsonPOI = response.data;
+          this.createMarkers(response.data, this.map);
+        });
     }
-  },
-  created() {
-    this.$axios
-      .get(
-        "http://localhost:8001/geoserver/hs/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=hs%3Ahspoi&maxFeatures=1020&outputFormat=application%2Fjson"
-      )
-      .then(response => {
-        this.geoJsonPOI = response.data;
-        this.createMarkers(this.geoJsonPOI);
-      });
   }
 };
 </script>
