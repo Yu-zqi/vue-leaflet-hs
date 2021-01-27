@@ -17,13 +17,13 @@ export default {
       geoJsonPOI: null,
       iconCity: null,
       iconCounty: null,
-      iconVillage: null
+      iconVillage: null,
+      markerClusterLayer: null
     };
   },
   mounted: function() {
     this.initMap();
     this.initIcon();
-    //console.log(this.map);
     this.getMarkerJson();
   },
   methods: {
@@ -54,14 +54,25 @@ export default {
       var tianditu = L.layerGroup([tiandituVec, tiandituCva]);
       tianditu.addTo(this.map);
     },
-    searchMoveToLocation() {
-      console.log("hello");
-      console.log(this.map);
+    searchMoveToLocation(markerClusterLayer, map, locationId) {
+      markerClusterLayer.eachLayer(function(markerLayer) {
+        if (markerLayer instanceof L.Marker)
+          if (markerLayer.feature.properties.OId == locationId) {
+            let latlng = L.latLng(
+              markerLayer.feature.geometry.coordinates[1],
+              markerLayer.feature.geometry.coordinates[0]
+            );
+            map.flyTo(latlng, 18);
+            map.once("moveend", function() {
+              markerLayer.openPopup();
+            });
+          }
+      });
     },
     //通过地图服务器的response创建marker
     createMarkers(res, map) {
       //创建一个MarkerClusterGroup实例，用于聚合显示marker
-      var markerClusterLayer = new L.MarkerClusterGroup({
+      this.markerClusterLayer = new L.MarkerClusterGroup({
         spiderfyOnMaxZoom: false,
         showCoverageOnHover: false,
         zoomToBoundsOnClick: true
@@ -122,28 +133,8 @@ export default {
         }
       });
 
-      markerClusterLayer.addLayer(featuresLayer);
-      map.addLayer(markerClusterLayer);
-
-      function moveToLocationFunciton(latlng) {
-        map.setView(latlng, 25);
-      }
-
-      //搜索框control
-      var searchControl = new L.Control.Search({
-        position: "topright",
-        layer: markerClusterLayer,
-        propertyName: "OId",
-        marker: false,
-        hideMarkerOnCollapse: true,
-        moveToLocation: moveToLocationFunciton
-      });
-
-      searchControl.on("search:locationfound", function(e) {
-        if (e.layer._popup) e.layer.openPopup();
-      });
-
-      map.addControl(searchControl);
+      this.markerClusterLayer.addLayer(featuresLayer);
+      map.addLayer(this.markerClusterLayer);
     },
     getMarkerJson() {
       this.$axios
