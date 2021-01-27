@@ -4,13 +4,15 @@
   </div>
 </template>
 
+<script></script>
+
 <style>
 html,
 body,
 #app {
   height: 100%;
   width: 100%;
-  margin: 0;
-  padding: 0;
+  padding: 0px;
+  margin: 0px;
 }
 </style>

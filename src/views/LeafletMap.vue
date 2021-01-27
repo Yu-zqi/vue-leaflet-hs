@@ -1,5 +1,15 @@
 <template>
-  <div id="map"></div>
+  <div class="mapcontainer">
+    <el-container class="mapcontainer">
+      <el-header>Header</el-header>
+      <el-container>
+        <el-aside>Aside</el-aside>
+        <el-container>
+          <el-main> <div id="map"></div></el-main>
+        </el-container>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -67,7 +77,6 @@ export default {
           }
       });
     },
-    //通过地图服务器的response创建marker
     createMarkers(res, map) {
       //创建一个MarkerClusterGroup实例，用于聚合显示marker
       this.markerClusterLayer = new L.MarkerClusterGroup({
@@ -150,6 +159,17 @@ export default {
 </script>
 
 <style>
+.mapcontainer {
+  width: 100%;
+  height: 100%;
+}
+.el-header {
+  background: blue;
+}
+.el-main {
+  padding: 0px !important;
+  margin: 0px !important;
+}
 #map {
   width: 100%;
   height: 100%;
