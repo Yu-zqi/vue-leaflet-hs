@@ -1,7 +1,10 @@
 <template>
   <div class="mapcontainer">
     <el-container class="mapcontainer">
-      <el-header>黄石市政务地图</el-header>
+      <el-header
+        ><img src="../assets/map_logo.png" width="50px" />
+        <div id="header-title">黄石市政务地图</div></el-header
+      >
       <el-container>
         <!--侧边栏-->
         <el-aside>
@@ -287,6 +290,29 @@ export default {
         zoom: 10,
         attributionControl: false
       });
+
+      L.control
+        .attribution({
+          prefix:
+            ' <ul class="mapIconInfo">\
+                <li><img src="https://static.hnzwfw.gov.cn/map/mapIcon/xzqh_2.png"><span>市级</span></li>\
+                <li><img src="https://static.hnzwfw.gov.cn/map/mapIcon/xzqh_3.png"><span>县级</span></li>\
+                <li><img src="https://static.hnzwfw.gov.cn/map/mapIcon/xzqh_5.png"><span>村级</span></li>\
+              </ul>'
+        })
+        .addTo(this.map);
+      L.control
+        .attribution({
+          prefix:
+            '<div id="tiandituInfo">\
+              <img src="https://api.tianditu.gov.cn/v4.0/image/logo.png">\
+              <span>GS(2019)1719号- 甲测资字1100471</span>\
+              <span>数据来源：国家地理信息公共服务平台</span>\
+            </div>',
+          position: "bottomleft"
+        })
+        .addTo(this.map);
+      L.control.scale({ imperial: false }).addTo(this.map);
       const tiandituVec = L.tileLayer(
         "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" +
           key
@@ -500,12 +526,24 @@ export default {
 .tasContainer {
   padding: 20px;
 }
+#header-title {
+  padding: 20px !important;
+}
+.el-header {
+  display: flex;
+  align-items: center;
+  font: bold 35px/80px arial, sans-serif;
+  letter-spacing: 15px;
+  color: #ffffff;
+  text-align: center;
+  background-color: #2850a0;
+  box-shadow: 0px 2px 6px #000;
+  height: 10% !important;
+  z-index: 999 !important;
+}
 .mapcontainer {
   width: 100%;
   height: 100%;
-}
-.el-header {
-  background: blue;
 }
 .el-main {
   padding: 0px !important;
@@ -521,6 +559,34 @@ export default {
 .el-pagination {
   text-align: center;
   bottom: 0;
+}
+
+/**数据来源声明 */
+#tiandituInfo {
+  display: flex;
+  align-items: center;
+}
+#tiandituInfo span {
+  margin: 0px 5px 0px 5px;
+}
+
+/**图例样式*/
+.mapIconInfo {
+  list-style-type: none;
+  width: 100px;
+  padding: 8px;
+}
+.mapIconInfo li span {
+  height: 30px;
+  line-height: 30px;
+  padding: 4px;
+  font-size: 16px;
+}
+.mapIconInfo li {
+  display: flex;
+  padding-left: 0;
+  margin: 8px;
+  justify-content: space-between;
 }
 
 /*markercluster样式*/
